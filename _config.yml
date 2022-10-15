@@ -21,9 +21,9 @@ timezone:
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Dueyin                        # the main title
+title: Dueyin                       # the main title
 
-tagline: 这里是Dueyin的博客～   # it will display as the sub-title
+tagline: 埏埴以为器，当其无，有器之用。   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
     这是通过Chirpy主题配置而成的
@@ -44,7 +44,7 @@ social:
   email: 1613669327@qq.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://www.bilibili.com/video/BV1hq4y1s7VH/?spm_id_from=333.337.search-card.all.click&vd_source=0983a1efcc38eb58776dee567a1d13dd      # change to your twitter homepage
+    -       # change to your twitter homepage
     - https://github.com/Dueyin       # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
