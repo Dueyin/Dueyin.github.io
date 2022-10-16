@@ -1,10 +1,10 @@
 ---
 title: 你好，世界！
-date: 2022-10-16 9:21 +0800
+date: 2022-10-16 9:48 +0800
 categories: [随笔]
 tags: [学习]
 pin: true
-author: Dueyin
+author: 湾区书记汤姆
 
 toc: true
 comments: true
