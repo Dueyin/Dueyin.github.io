@@ -1,6 +1,6 @@
 ---
 title: 你好，世界！
-date: 2022-10-16 09:21 +0800
+date: 2022-10-16 9:21 +0800
 categories: [随笔]
 tags: [学习]
 pin: true
@@ -8,16 +8,16 @@ author: Dueyin
 
 toc: true
 comments: true
-typora-root-url: ../../tomstillcoding.github.io
+
 math: false
 mermaid: true
 
-
+typora-root-url: ../../Dueyin.github.io
 ---
 
 # Hello World ~
 
-
+![posts](/assets/blog_res/2021-03-30-hello-world.assets/posts.jpg)
 
 ```c++
 include<iostream>
