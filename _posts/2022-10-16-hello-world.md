@@ -4,7 +4,7 @@ date: 2022-10-16 9:48 +0800
 categories: [随笔]
 tags: [学习]
 pin: true
-author: 湾区书记汤姆
+author: Duyin
 
 toc: true
 comments: true
@@ -12,7 +12,7 @@ comments: true
 math: false
 mermaid: true
 
-typora-root-url: ../../Dueyin.github.io
+typora-root-url: ./..
 ---
 
 # Hello World ~
