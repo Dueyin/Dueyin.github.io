@@ -15,7 +15,7 @@ mermaid: true
 typora-root-url: ./..
 ---
 
-# 新老生预选赛题目选讲
+## 新老生预选赛题目选讲
 
 ​	emmm，10月18号了，新生也快要入学了，但是新生们好像并不是很勤勉，希望大家加油啊，要入队了。
 
@@ -210,7 +210,7 @@ int main()
 
 ```
 
-PS：谢老师的代码当然更加优秀，所以贴的是它的代码，~~***绝不是因为我懒***~~，另外附上谢老师讲解视频链接https://www.bilibili.com/video/bv11L4y1b7JQ
+PS：谢老师的代码当然更加优秀，所以贴的是他的代码，~~***绝不是因为我懒***~~，另外附上谢老师讲解视频链接https://www.bilibili.com/video/bv11L4y1b7JQ
 
 ## 第五题P1037
 
@@ -299,6 +299,545 @@ int main()
 	return 0;
 }
 ```
+
+## 第七题E895
+
+#### 题目描述
+
+高考结束了，同学们要开始了紧张的填写志愿的过程，大家希望找一个自己最满意的大学填报方案，请你编程帮忙实现。
+现有m(m≤100000)所学校，每所学校预计分数线是ai(ai≤106)。有 n(n≤100000)位学生，估分分别为 bi(bi≤106)。
+根据n位学生的估分情况，分别给每位学生推荐一所学校，要求学校的预计分数线和学生的估分相差最小（可高可低，毕竟是估分嘛），这个最小值为不满意度。求所有学生不满意度和的最小值。
+
+#### 题目分析
+
+这题首先想到的是暴力，直接一个一个找，但除非是入门基础语法级选手，我们不得不思考暴力时间复杂度上的缺憾，所以我们需要另寻方案。而熟话说***二分是更高效的暴力***（~~其实是我说的~~），所以，我们理所应当考虑到了二分，事实上，本题也确实是二分。下面是我惯用的一套二分模板
+
+```c++
+while(l<=r){
+    mid=(l+r)>>1;
+    if(check(mid))r=mid-1;
+    else l=mid+1;
+}
+```
+
+二分就是这样一个工具，他可以通过**check**很高效的结合到任何算法中，化腐朽为神奇，所以很多题没有思路都可以考虑一下二分的可能
+
+本题并没有什么弯弯绕绕，二分基本就可以了,但作为初学者，二分过程中的排序当然也是要自己写，才显得够勤勉，所以我们再写一个快速排序，下面是我的快排模板
+
+```c++
+void quick_sort(int l,int r){
+	if(l>=r) return ;
+	int i=l-1,j=r+1,x=a[(l+r+1)/2];
+	while(i<j){
+		do i++;while(a[i]<x);
+		do j--;while(a[j]>x);
+		if(i<j){
+			int t=a[i];
+			a[i]=a[j];
+			a[j]=t;
+		}
+	}
+	quick_sort(l,i-1);
+	quick_sort(i,r);
+}
+```
+
+那么要素已经集齐了，下面就是AC代码环节
+
+```c++
+#include<iostream>
+#include<cmath>
+using namespace std;
+const int N=1e5+7;
+
+int n,m,i;
+int a[N],b[N];
+
+void quick_sort(int l,int r){
+	if(l>=r) return ;
+	int i=l-1,j=r+1,x=a[(l+r+1)/2];
+	while(i<j){
+		do i++;while(a[i]<x);
+		do j--;while(a[j]>x);
+		if(i<j){
+			int t=a[i];
+			a[i]=a[j];
+			a[j]=t;
+		}
+	}
+	quick_sort(l,i-1);
+	quick_sort(i,r);
+}
+
+bool check(int x){
+    if(a[x]>b[i])return true;
+    else return false;
+}
+
+int erfen(int l,int r){
+    while(l<=r){
+        int mid=(l+r)>>1;
+        if(check(mid))r=mid-1;
+    	else l=mid+1;
+    }
+    return r+1;
+}
+
+int main(){
+    cin>>m>>n;
+    for(int j=1;j<=m;j++)cin>>a[j];
+    for(int j=1;j<=n;j++)cin>>b[j];
+    quick_sort(1,m);
+    int ans=0;
+    a[0]=-9999999;
+    for(i=1;i<=n;i++){
+        int l=erfen(1,m);
+        ans+=min(abs(a[l]-b[i]),min(abs(a[l-1]-b[i]),abs(a[l+1]-b[i])));//这个比较是有必要的，因为本题二分能找到的位置只是包括精确位置在内，旁边一个范围里的位置
+    }
+    cout<<ans;
+    return 0;
+}
+
+```
+
+## 第八题P1028
+
+#### 题目描述
+
+Krik晚上失眠，躺着很无聊，于是突发奇想道阳台上去看星星。不失所望，那夜繁星当空、星河奔流。Kirk越看越精神，在繁星中发现了一个又一个的数字，刚学编程不久的Kirk想到，电脑上也有星星，何不操作一波呢！
+
+经过一番痛苦的敲键盘事件之后，终于Kirk电脑屏幕上出现了下图十个数字的星星表达式：
+
+![image.png](http://www.mangata.ltd/file/9/A+B%E7%B9%81%E6%98%9F.png)
+
+（本来想给文本的，但是文本太丑了）
+
+为了让大家体会一下Kirk痛苦的敲代码事件，所以Kirk给你两个整数 A 和 B ，你的任务是计算 A+B 的结果并且使用星星表达式输出结果。
+
+#### 题目分析
+
+我最喜欢做这种很好看的题了，不过这种题简单但代码一般都很麻烦，比如这道题，我们必须对每个数字进行改编的函数，相当麻烦，但就和前面说的一样，题本身并不困难,只需要一排一排打每个数字就行了，还有一些大佬操作，我一起贴在下面，有兴趣可以看一下（代码来自Kirk题解，~~***话说这种有题解的干嘛不看题解***~~***）***
+
+***Kirk佬的代码，很好理解***
+
+```c++
+#include <stdio.h>
+
+void cout0(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("* *");
+    else if (line == 3)
+        printf("* *");
+    else if (line == 4)
+        printf("* *");
+    else if (line == 5)
+        printf("***");
+}
+
+void cout1(int line) {
+    if (line == 1)
+        printf(" * ");
+    else if (line == 2)
+        printf(" * ");
+    else if (line == 3)
+        printf(" * ");
+    else if (line == 4)
+        printf(" * ");
+    else if (line == 5)
+        printf(" * ");
+}
+
+void cout2(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("  *");
+    else if (line == 3)
+        printf("***");
+    else if (line == 4)
+        printf("*  ");
+    else if (line == 5)
+        printf("***");
+}
+
+void cout3(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("  *");
+    else if (line == 3)
+        printf("***");
+    else if (line == 4)
+        printf("  *");
+    else if (line == 5)
+        printf("***");
+}
+
+void cout4(int line) {
+    if (line == 1)
+        printf("* *");
+    else if (line == 2)
+        printf("* *");
+    else if (line == 3)
+        printf("***");
+    else if (line == 4)
+        printf("  *");
+    else if (line == 5)
+        printf("  *");
+}
+
+void cout5(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("*  ");
+    else if (line == 3)
+        printf("***");
+    else if (line == 4)
+        printf("  *");
+    else if (line == 5)
+        printf("***");
+}
+
+void cout6(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("*  ");
+    else if (line == 3)
+        printf("***");
+    else if (line == 4)
+        printf("* *");
+    else if (line == 5)
+        printf("***");
+}
+
+void cout7(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("  *");
+    else if (line == 3)
+        printf("  *");
+    else if (line == 4)
+        printf("  *");
+    else if (line == 5)
+        printf("  *");
+}
+
+void cout8(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("* *");
+    else if (line == 3)
+        printf("***");
+    else if (line == 4)
+        printf("* *");
+    else if (line == 5)
+        printf("***");
+}
+
+void cout9(int line) {
+    if (line == 1)
+        printf("***");
+    else if (line == 2)
+        printf("* *");
+    else if (line == 3)
+        printf("***");
+    else if (line == 4)
+        printf("  *");
+    else if (line == 5)
+        printf("***");
+}
+
+int main() {
+    int A, B;
+    scanf("%d%d", &A, &B);
+    int res = A + B; // 数据保证 10 <= A + B < 100
+    int num1 = res / 10;
+    int num2 = res % 10;
+    for (int j = 1; j <= 6; j++) {
+        if (num1 == 0)
+            cout0(j);
+        else if (num1 == 1)
+            cout1(j);
+        else if (num1 == 2)
+            cout2(j);
+        else if (num1 == 3)
+            cout3(j);
+        else if (num1 == 4)
+            cout4(j);
+        else if (num1 == 5)
+            cout5(j);
+        else if (num1 == 6)
+            cout6(j);
+        else if (num1 == 7)
+            cout7(j);
+        else if (num1 == 8)
+            cout8(j);
+        else if (num1 == 9)
+            cout9(j);
+        putchar(' ');
+        if (num2 == 0)
+            cout0(j);
+        else if (num2 == 1)
+            cout1(j);
+        else if (num2 == 2)
+            cout2(j);
+        else if (num2 == 3)
+            cout3(j);
+        else if (num2 == 4)
+            cout4(j);
+        else if (num2 == 5)
+            cout5(j);
+        else if (num2 == 6)
+            cout6(j);
+        else if (num2 == 7)
+            cout7(j);
+        else if (num2 == 8)
+            cout8(j);
+        else if (num2 == 9)
+            cout9(j);
+        putchar('\n');
+    }
+    return 0;
+}
+
+```
+
+***未知大佬的代码1***
+
+```c++
+#include<iostream>
+using namespace std;
+string x[15][10];
+int ans[105],cou;
+int main(){
+	ios::sync_with_stdio(false);
+	x[0][0]="***";
+	x[0][1]="* *";
+	x[0][2]="* *";
+	x[0][3]="* *";
+	x[0][4]="***";
+	
+	x[1][0]=" * ";
+	x[1][1]=" * ";
+	x[1][2]=" * ";
+	x[1][3]=" * ";
+	x[1][4]=" * ";
+	
+	x[2][0]="***";
+	x[2][1]="  *";
+	x[2][2]="***";
+	x[2][3]="*  ";
+	x[2][4]="***";
+	
+	x[3][0]="***";
+	x[3][1]="  *";
+	x[3][2]="***";
+	x[3][3]="  *";
+	x[3][4]="***";
+	
+	x[4][0]="* *";
+	x[4][1]="* *";
+	x[4][2]="***";
+	x[4][3]="  *";
+	x[4][4]="  *";
+	
+	x[5][0]="***";
+	x[5][1]="*  ";
+	x[5][2]="***";
+	x[5][3]="  *";
+	x[5][4]="***";
+	
+	x[6][0]="***";
+	x[6][1]="*  ";
+	x[6][2]="***";
+	x[6][3]="* *";
+	x[6][4]="***";
+	
+	x[7][0]="***";
+	x[7][1]="  *";
+	x[7][2]="  *";
+	x[7][3]="  *";
+	x[7][4]="  *";
+	
+	x[8][0]="***";
+	x[8][1]="* *";
+	x[8][2]="***";
+	x[8][3]="* *";
+	x[8][4]="***";
+	
+	x[9][0]="***";
+	x[9][1]="* *";
+	x[9][2]="***";
+	x[9][3]="  *";
+	x[9][4]="***";
+	
+	int a,b;
+	cin>>a>>b;
+	int xx=a+b,y=0,yy;
+	while(xx){
+		ans[cou++]=xx%10;
+		xx/=10;
+	}
+	for(int i=0;i<5;i++){
+		yy=y;
+		for(int j=cou-1;j>=0;j--){
+			cout<<x[ans[j]][i];
+			if(j)cout<<' ';
+		}
+		cout<<endl;
+	}
+	
+	
+	
+	return 0;
+}
+
+#include<iostream>
+using namespace std;
+char n0[6][6]={"***","* *","* *","* *","***"},n1[6][6]={" * "," * "," * "," * "," * "};
+char n2[6][6]={"***","  *","***","*  ","***"},n3[6][6]={"***","  *","***","  *","***"};
+char n4[6][6]={"* *","* *","***","  *","  *"},n5[6][6]={"***","*  ","***","  *","***"};
+char n6[6][6]={"***","*  ","***","* *","***"},n7[6][6]={"***","  *","  *","  *","  *"};
+char n8[6][6]={"***","* *","***","* *","***"},n9[6][6]={"***","* *","***","  *","***"};
+int main()
+{
+	int a,b;
+	cin>>a>>b;
+	int c=a+b;
+	char s[3];
+
+	s[1]=c/10;
+	s[2]=c%10;
+	int flag=0;
+			for(int p=0;p<5;p++)
+			{
+				for(int j=1;j<3;j++)
+				{
+					if(s[j]==1)cout<<n1[p];
+					if(s[j]==2)cout<<n2[p];
+					if(s[j]==3)cout<<n3[p];
+					if(s[j]==4)cout<<n4[p];
+					if(s[j]==5)cout<<n5[p];
+					if(s[j]==6)cout<<n6[p];
+					if(s[j]==7)cout<<n7[p];
+					if(s[j]==8)cout<<n8[p];
+					if(s[j]==9)cout<<n9[p];
+					if(s[j]==0)cout<<n0[p];
+                    if(j==1)cout<<" ";
+				}
+				cout<<"\n";
+	}
+	return 0;
+}
+
+```
+
+***未知大佬的代码2***
+
+```c++
+#include<iostream>
+using namespace std;
+char n0[6][6]={"***","* *","* *","* *","***"},n1[6][6]={" * "," * "," * "," * "," * "};
+char n2[6][6]={"***","  *","***","*  ","***"},n3[6][6]={"***","  *","***","  *","***"};
+char n4[6][6]={"* *","* *","***","  *","  *"},n5[6][6]={"***","*  ","***","  *","***"};
+char n6[6][6]={"***","*  ","***","* *","***"},n7[6][6]={"***","  *","  *","  *","  *"};
+char n8[6][6]={"***","* *","***","* *","***"},n9[6][6]={"***","* *","***","  *","***"};
+int main()
+{
+	int a,b;
+	cin>>a>>b;
+	int c=a+b;
+	char s[3];
+
+	s[1]=c/10;
+	s[2]=c%10;
+	int flag=0;
+			for(int p=0;p<5;p++)
+			{
+				for(int j=1;j<3;j++)
+				{
+					if(s[j]==1)cout<<n1[p];
+					if(s[j]==2)cout<<n2[p];
+					if(s[j]==3)cout<<n3[p];
+					if(s[j]==4)cout<<n4[p];
+					if(s[j]==5)cout<<n5[p];
+					if(s[j]==6)cout<<n6[p];
+					if(s[j]==7)cout<<n7[p];
+					if(s[j]==8)cout<<n8[p];
+					if(s[j]==9)cout<<n9[p];
+					if(s[j]==0)cout<<n0[p];
+                    if(j==1)cout<<" ";
+				}
+				cout<<"\n";
+	}
+	return 0;
+}
+
+
+```
+
+***本蒟蒻的代码***
+
+```c++
+#include<iostream>
+using namespace std;
+
+void cou(int x,int line){
+    if(line==1){
+		if(x==0||x==2||x==3||x==5||x==6||x==7||x==8||x==9)cout<<"***";
+        if(x==1)cout<<" * ";
+        if(x==4)cout<<"* *";
+    }
+    if(line==2){
+        if(x==0||x==4||x==8||x==9)cout<<"* *";
+        if(x==1)cout<<" * ";
+        if(x==2||x==3||x==7)cout<<"  *";
+        if(x==5||x==6)cout<<"*  ";
+    }
+    if(line==3){
+		if(x==0)cout<<"* *";
+        if(x==1)cout<<" * ";
+        if(x==2||x==3||x==4||x==5||x==6||x==8||x==9)cout<<"***";
+        if(x==7)cout<<"  *";
+    }
+    if(line==4){
+		if(x==0||x==6||x==8)cout<<"* *";
+        if(x==1)cout<<" * ";
+        if(x==2)cout<<"*  ";
+        if(x==3||x==4||x==5||x==7||x==9)cout<<"  *";
+    }
+    if(line==5){
+        if(x==0||x==2||x==3||x==5||x==6||x==8||x==9)cout<<"***";
+        if(x==1)cout<<" * ";
+        if(x==4||x==7)cout<<"  *";
+    }
+}
+
+int main(){
+    int a,b;
+    cin>>a>>b;
+    int c=a+b;
+    b=c%10;
+    a=(c-b)/10;
+    for(int i=1;i<=5;i++){
+        cou(a,i);
+        cout<<" ";
+        cou(b,i);
+        cout<<endl;
+    }
+    return 0;
+}
+```
+
+***就是这样，喵~***
+
+
 
 ## 结语
 
